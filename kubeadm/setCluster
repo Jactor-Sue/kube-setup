@@ -22,7 +22,7 @@ fi
 swapoff -a
 systemctl daemon-reload
 systemctl start kubelet
-kubeadm init --kubernetes-version=$version --pod-network-cidr=192.168.0.0/16
+kubeadm init --kubernetes-version=$version --pod-network-cidr=192.168.0.0/16 --token-ttl=0
 
 rm -rf $HOME/.kube
 mkdir -p $HOME/.kube
