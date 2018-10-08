@@ -9,9 +9,9 @@
 pid=$(ps aux | grep kubectl | grep proxy | awk '{print$2}')
 kill -9 $pid
 
-version="v1.11.3"
+version="v1.12.1"
 
-download=`docker images | grep "v1.11.3"`
+download=`docker images | grep "$version"`
 if [[ -z $download ]]
 then 
     bash scripts/removeImages
@@ -22,7 +22,7 @@ fi
 swapoff -a
 systemctl daemon-reload
 systemctl start kubelet
-kubeadm init --kubernetes-version=$version --skip-preflight-checks
+kubeadm init --kubernetes-version=$version --pod-network-cidr=192.168.0.0/16
 
 rm -rf $HOME/.kube
 mkdir -p $HOME/.kube
@@ -43,6 +43,7 @@ kubectl taint nodes --all node-role.kubernetes.io/master-
 iptables -P FORWARD ACCEPT
 
 
+kubectl create -f yamls/calicorole.yaml
 kubectl create -f yamls/netcalico.yaml
 kubectl create -f yamls/dashboard.yaml
 kubectl create -f yamls/sysrole.yaml

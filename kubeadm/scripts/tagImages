@@ -11,8 +11,8 @@ prefix="registry.cn-hangzhou.aliyuncs.com"
 gcr_io="k8s.gcr.io/"
 quay_io="quay.io/"
 
-gcr_images="kube-apiserver-amd64|kube-controller-manager-amd64|kube-proxy-amd64|kube-scheduler-amd64|coredns|pause|etcd-amd64|kubernetes-dashboard-amd64"
-quay_images="calico-node|calico-cni|calico-kube-controllers"
+gcr_images="kube-apiserver|kube-controller-manager|kube-proxy|kube-scheduler|coredns|pause|etcd|kubernetes-dashboard-amd64"
+quay_images="calico-node|calico-cni|calico-typha"
 
 function rename()
 {
