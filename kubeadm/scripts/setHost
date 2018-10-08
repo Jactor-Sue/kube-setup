@@ -1,0 +1,27 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-8-13
+##
+################################################################
+
+uname=$(hostname)
+
+if [[ ${uname} != "localhost.localdomain" ]]
+then
+    echo "hostname is ${uname}"
+    exit 0
+fi
+
+nic=$(ip a | grep "state UP" | head -1 | awk -F":" '{print$2}')
+
+if [[ -z $nic ]]
+then
+    echo "No active NIC found."
+    exit 0
+fi
+
+IP=$(ip a | grep ${nic} | grep inet | head -1 | awk -F"/" '{print $1}' | awk '{print $2}')
+hostnamectl set-hostname ${IP}
+echo "set hostname to ${IP}"

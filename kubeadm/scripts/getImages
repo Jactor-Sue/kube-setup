@@ -1,0 +1,43 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-8-13
+##
+################################################################
+
+#! /usr/bin/expect
+
+mirror="registry.cn-hangzhou.aliyuncs.com/isdream/"
+
+kube_version="v1.11.3"
+kube_apiserver="kube-apiserver-amd64"
+kube_controller_manager="kube-controller-manager-amd64"
+kube_proxy="kube-proxy-amd64"
+kube_scheduler="kube-scheduler-amd64"
+
+calico_version="v3.1.3"
+calico_node="calico-node"
+calico_cni="calico-cni"
+calico_kube_controller="calico-kube-controllers"
+
+kube_coredns="coredns:1.1.3"
+kube_pause="pause:3.1"
+kube_etcd="etcd-amd64:3.2.18"
+kube_dash="kubernetes-dashboard-amd64:v1.10.0"
+
+echo "Password is Oncecloud1234"
+docker login --username=oncecloud registry.cn-hangzhou.aliyuncs.com
+
+docker pull $mirror$kube_apiserver:$kube_version
+docker pull $mirror$kube_controller_manager:$kube_version
+docker pull $mirror$kube_proxy:$kube_version
+docker pull $mirror$kube_scheduler:$kube_version
+docker pull $mirror$kube_coredns
+docker pull $mirror$kube_pause
+docker pull $mirror$kube_etcd
+docker pull $mirror$kube_dash
+
+docker pull $mirror$calico_node:$calico_version
+docker pull $mirror$calico_cni:$calico_version
+docker pull $mirror$calico_kube_controller:$calico_version

@@ -1,0 +1,22 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@iscas.ac.cn
+## @date   2018-9-16
+##
+################################################################
+
+gcr_io="k8s.gcr.io/"
+quay_io="quay.io/"
+
+function remove()
+{
+    for name in `docker images | grep -E "$1" | awk '{print$1":"$2}'`
+    do
+        img=$(echo $name | awk -F"/" '{print $3}')
+        docker rmi $name
+    done
+}
+
+remove $gcr_io
+remove $quay_io

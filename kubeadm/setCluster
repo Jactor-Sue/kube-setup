@@ -1,0 +1,56 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-8-14
+##
+################################################################
+
+pid=$(ps aux | grep kubectl | grep proxy | awk '{print$2}')
+kill -9 $pid
+
+version="v1.11.3"
+
+download=`docker images | grep "v1.11.3"`
+if [[ -z $download ]]
+then 
+    bash scripts/removeImages
+    bash scripts/getImages
+    bash scripts/tagImages
+fi
+
+swapoff -a
+systemctl daemon-reload
+systemctl start kubelet
+kubeadm init --kubernetes-version=$version --skip-preflight-checks
+
+rm -rf $HOME/.kube
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+while true
+do
+    stat=`kubectl get po --all-namespaces | grep kube-apiserver | awk '{print $4}'`
+    if [ "$stat" = "Running" ]
+    then
+        break
+    fi
+    sleep 5
+done
+
+kubectl taint nodes --all node-role.kubernetes.io/master-
+iptables -P FORWARD ACCEPT
+
+
+kubectl create -f yamls/netcalico.yaml
+kubectl create -f yamls/dashboard.yaml
+kubectl create -f yamls/sysrole.yaml
+kubectl create -f yamls/prometheus.yaml
+kubectl create -f yamls/grafana.yaml
+
+kubectl proxy --address=0.0.0.0 --disable-filter=true &
+
+echo ""
+echo ""
+echo "http://[IP]:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"

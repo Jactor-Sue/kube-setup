@@ -1,0 +1,28 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-8-13
+##
+################################################################
+
+prefix="registry.cn-hangzhou.aliyuncs.com"
+
+gcr_io="k8s.gcr.io/"
+quay_io="quay.io/"
+
+gcr_images="kube-apiserver-amd64|kube-controller-manager-amd64|kube-proxy-amd64|kube-scheduler-amd64|coredns|pause|etcd-amd64|kubernetes-dashboard-amd64"
+quay_images="calico-node|calico-cni|calico-kube-controllers"
+
+function rename()
+{
+    for name in `docker images | grep $prefix | grep -E "$1" | awk '{print$1":"$2}'`
+    do
+        img=$(echo $name | awk -F"/" '{print $3}')
+        docker tag $name $2$img
+        docker rmi $name
+    done
+}
+
+rename $gcr_images $gcr_io
+rename $quay_images $quay_io
