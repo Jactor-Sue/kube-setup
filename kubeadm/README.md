@@ -5,6 +5,11 @@ This version is Just for CentOS 7.x
 kubeadm can help you bootstrap a minimum viable Kubernetes cluster that conforms to best practices. With kubeadm, your cluster should pass Kubernetes Conformance tests. Kubeadm also supports other cluster lifecycle functions, such as upgrades, downgrade, and managing bootstrap tokens.
 
 ## How to use kubeadm
+0. prerequisite
+
+```
+bash initDOcker
+```
 
 1. modify your hostname if it's name equal 'localhost'. otherwise, you can skip this step.
 
