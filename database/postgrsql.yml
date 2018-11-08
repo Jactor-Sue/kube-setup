@@ -1,0 +1,17 @@
+version: '3.1'
+services:
+  db:
+    image: bitnami/postgresql
+    restart: always
+    environment:
+      POSTGRESQL_USERNAME: test
+      POSTGRESQL_PASSWORD: test
+      POSTGRESQL_DATABASE: test
+    volumes:
+      - /var/lib/data:/bitnami
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
