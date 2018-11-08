@@ -1,0 +1,22 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-8-13
+##
+################################################################
+
+#! /usr/bin/expect
+
+echo "Password is Oncecloud1234"
+docker login --username=oncecloud registry.cn-hangzhou.aliyuncs.com
+
+prefix="registry.cn-hangzhou.aliyuncs.com/isdream/"
+
+for name in $(cat $1)
+do
+  iname=${name##*/}
+  docker pull $prefix$iname
+  docker tag  $prefix$iname $name
+  docker rmi  $prefix$iname
+done
