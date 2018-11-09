@@ -1,4 +1,4 @@
 \cp *.repo /etc/yum.repos.d/
-yum install docker-ce kubeadm kubectl kubele -y
+yum install docker-ce kubeadm kubectl kubele openssl -y
 systemctl start docker 
 systemctl enable docker
