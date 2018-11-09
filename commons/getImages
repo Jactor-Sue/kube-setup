@@ -13,10 +13,34 @@ docker login --username=oncecloud registry.cn-hangzhou.aliyuncs.com
 
 prefix="registry.cn-hangzhou.aliyuncs.com/isdream/"
 
-for name in $(cat $1)
-do
-  iname=${name##*/}
-  docker pull $prefix$iname
-  docker tag  $prefix$iname $name
-  docker rmi  $prefix$iname
-done
+function pull()
+{
+  for name in $(cat $1)
+  do
+    check $name
+    if [[ $? = "1" ]]
+    then
+      continue
+    fi
+
+    iname=${name##*/}
+    docker pull $prefix$iname
+    docker tag  $prefix$iname $name
+    docker rmi  $prefix$iname
+  done
+}
+
+function check()
+{
+   sname=$(echo $1 | awk -F":" '{print $1}')
+   svers=$(echo $1 | awk -F":" '{print $2}')
+   res=$(docker images | grep $sname | grep $svers | grep -v grep)
+   if [[ -z $res ]]
+   then
+     return 0
+   else
+     return 1
+   fi
+}
+
+pull $1
