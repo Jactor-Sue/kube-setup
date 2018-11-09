@@ -4,7 +4,7 @@ Cloud computing is one of the most important technologies for enterprises to opt
 
 - Docker: please see the guide to get docker-ce for different Linux distributions, such as [redhat](https://docs.docker.com/install/linux/docker-ee/rhel/), [SUSE](https://docs.docker.com/install/linux/docker-ee/suse/), [Oracle Linux](https://docs.docker.com/install/linux/docker-ee/oracle/),[centos](https://docs.docker.com/install/linux/docker-ce/centos/), [debian](https://docs.docker.com/install/linux/docker-ce/debian/), [fedora](https://docs.docker.com/install/linux/docker-ce/fedora/), [ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 - Openssl:[OpenSSL](https://www.openssl.org/) is a robust, commercial-grade, and full-featured toolkit for the Transport Layer Security (TLS) and Secure Sockets Layer (SSL)
-
+- socat: [socat](http://www.dest-unreach.org/socat)is a relay for bidirectional data transfer between two independent data channels.
 
 ## Systems
 
