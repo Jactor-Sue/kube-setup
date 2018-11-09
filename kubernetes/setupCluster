@@ -6,52 +6,79 @@
 ##
 ################################################################
 
-pid=$(ps aux | grep kubectl | grep proxy | awk '{print$2}')
-kill -9 $pid
-
 version="v1.12.1"
+podcidr="192.168.0.0/16"
+network="Calico"
+toolurl="http://118.190.96.247/tools/"
 
-download=`docker images | grep "$version"`
-if [[ -z $download ]]
-then 
-    bash scripts/removeImages
-    bash scripts/getImages
-    bash scripts/tagImages
-fi
+function getKubeTools()
+{
+  rm -rf tools.txt
+  wget $toolurl/tools.txt
+  for name in $(cat tools.txt)
+  do
+    iname=${name%-*}
+    check $iname
+    if [[ $? = "1" ]]
+    then
+      continue
+    fi
 
-swapoff -a
-systemctl daemon-reload
-systemctl start kubelet
-kubeadm init --kubernetes-version=$version --pod-network-cidr=192.168.0.0/16 --token-ttl=0
+    wget $toolurl/$name
+    mv -f $name /usr/bin/$iname
+    chmod 777 /usr/bin/$iname
+  done
+  rm -rf tools.txt
+}
 
-rm -rf $HOME/.kube
-mkdir -p $HOME/.kube
-sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config
+function check()
+{
+   res=$(ls /usr/bin/ | grep $1 | grep -v grep)
+   if [[ -z $res ]]
+   then
+     return 0
+   else
+     return 1
+   fi
+}
 
-while true
-do
+function setupCluster()
+{
+  swapoff -a
+  echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
+  rm -rf $HOME/.kube
+  systemctl daemon-reload
+  systemctl start kubelet
+  systemctl stop firewalld
+  systemctl disable firewalld
+  
+  echo "kubeadm init --kubernetes-version=$version --pod-network-cidr=$podcidr --token-ttl=0 --ignore-preflight-errors=SystemVerification"
+  kubeadm init --kubernetes-version=$version --pod-network-cidr=$podcidr --token-ttl=0 --ignore-preflight-errors=SystemVerification 
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+  kubectl taint nodes --all node-role.kubernetes.io/master-
+  iptables -P FORWARD ACCEPT
+}
+
+function setupCalico()
+{
+  while true
+  do
     stat=`kubectl get po --all-namespaces | grep kube-apiserver | awk '{print $4}'`
     if [ "$stat" = "Running" ]
     then
-        break
+      break
     fi
     sleep 5
-done
+  done
+  
+  kubectl create -f yamls/calicorole.yaml
+  kubectl create -f yamls/netcalico.yaml
+}
 
-kubectl taint nodes --all node-role.kubernetes.io/master-
-iptables -P FORWARD ACCEPT
-
-
-kubectl create -f yamls/calicorole.yaml
-kubectl create -f yamls/netcalico.yaml
-kubectl create -f yamls/dashboard.yaml
-kubectl create -f yamls/sysrole.yaml
-kubectl create -f yamls/prometheus.yaml
-kubectl create -f yamls/grafana.yaml
-
-kubectl proxy --address=0.0.0.0 --disable-filter=true &
-
-echo ""
-echo ""
-echo "http://[IP]:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/"
+bash ../commons/getImages images.conf
+getKubeTools
+setupCluster
+setup$Network
