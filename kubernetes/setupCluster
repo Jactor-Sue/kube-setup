@@ -10,6 +10,8 @@ version="v1.12.1"
 podcidr="192.168.0.0/16"
 network="Calico"
 toolurl="http://118.190.96.247/tools/"
+confdir="/etc/systemd/system/kubelet.service.d/"
+systemc="/etc/systemd/system/"
 
 function getKubeTools()
 {
@@ -19,22 +21,36 @@ function getKubeTools()
   do
     iname=${name%-*}
     check $iname
-    if [[ $? = "1" ]]
+    state=$?
+    if [[ $state = "0" ]]
     then
-      continue
-    fi
+      wget $toolurl/$name
+      mv -f $name /usr/bin/$iname
+      chmod 777 /usr/bin/$iname
+    
+      res=$(echo $iname | grep ".service")
+      if [[ -n $res  ]]
+      then
+        \cp /usr/bin/$iname $systemc
+      fi
 
-    wget $toolurl/$name
-    mv -f $name /usr/bin/$iname
-    chmod 777 /usr/bin/$iname
+      res=$(echo $iname | grep ".conf")
+      if [[ -n $res  ]]
+      then
+        if [[ ! -d $confdir ]]
+        then
+          mkdir -p $confdir
+        fi
+        \cp /usr/bin/$iname $confdir
+      fi
+    fi
   done
   rm -rf tools.txt
 }
 
 function check()
 {
-   res=$(ls /usr/bin/ | grep $1 | grep -v grep)
-   if [[ -z $res ]]
+   if [[ ! -f /usr/bin/$1 ]]
    then
      return 0
    else
@@ -81,4 +97,4 @@ function setupCalico()
 bash ../commons/getImages images.conf
 getKubeTools
 setupCluster
-setup$Network
+setupCalico
