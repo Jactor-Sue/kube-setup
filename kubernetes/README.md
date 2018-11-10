@@ -1,49 +1,24 @@
-This version is Just for CentOS 7.x
+## Introduction
 
-## What is kubeadm
+These scripts is based on kubeadm, which can help you bootstrap a minimum viable Kubernetes cluster that conforms to best practices. With this script, you can support cluster lifecycle functions, such as upgrades, downgrade, and managing bootstrap tokens.
 
-kubeadm can help you bootstrap a minimum viable Kubernetes cluster that conforms to best practices. With kubeadm, your cluster should pass Kubernetes Conformance tests. Kubeadm also supports other cluster lifecycle functions, such as upgrades, downgrade, and managing bootstrap tokens.
+## Create cluster with singleton model
 
-## How to use kubeadm
-0. prerequisite
-
-```
-bash initDOcker
-```
-
-1. modify your hostname if it's name equal 'localhost'. otherwise, you can skip this step.
+1. install kubernetes with network plugin "calico"
 
 ```
-bash scripts/setHost
+bash setupCluster
 ```
 
-2. install kubernetes with network plugin "calico"
+2. then you can see the following commnad line instructions
 
 ```
-bash setCluster
-```
-
-3. then you can see the following commnad line instructions
-
-```
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-You can now join any number of machines by running the following on each node
-as root:
-
-  kubeadm join 118.190.96.247:6443 --token 7br8a7.592ei2vq32n0hobm --discovery-token-ca-cert-hash sha256:7c0f3d52670e6e64e7cce7f700b46e88154dc4bf94bf82938488e13eb49b4b31
-
 ......
 
-http://[IP]:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
-W0916 21:20:46.005078   31923 proxy.go:139] Request filter disabled, your proxy is vulnerable to XSRF attacks, please be cautious
-Starting to serve on [::]:8001
+URL: https://<masterip>:30314
+
+token: eyJhbGciOiJSUzI1NiIsImtpZCI6IiJ9.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJrdWJlLXN5c3RlbSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VjcmV0Lm5hbWUiOiJrdWJlcm5ldGVzLWRhc2hib2FyZC10b2tlbi14ZHhsaiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjdiMTE2MjI3LWU0OWEtMTFlOC04YTgwLTAwMTYzZTA1ZDU5NSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlLXN5c3RlbTprdWJlcm5ldGVzLWRhc2hib2FyZCJ9.NoY9K8s5fPmpCWlpI0LieCtYttOnOUHj5wd9z59XPwEtrBqFto3fvsoYBV4Xf_LN6c-9aZOlylv9M-cHmQsLzAOA2rPwL2mVZUaqChVM4iz0qlkwIDYMQi89pA1wQcTrdEB2apHGrtidA9_4iSzDjB7xsV1dfBvN6NBy1JqDvkHx1XfKMUkl62xQ3MEDpLefesNyru8BABIzEd65bb4WrMR2PdjHT4r1ID4mhvBZxZxEcxT4tI3hW7jschy7qIEoaC32Z3wI6YAJ7fnK5SfOcZc5j5J3KHjKf8-vLkbPHjRi43UlyrNLLVGgYTpWJZri7JFxFL8kUCGuASNOe4gM0A
 ```
 
-4. visit the below URL and click the skip button. That is all, please enjoy it.
+3. visit the below URL and click the token button. That is all, please enjoy it.
 
-```
-http://[IP]:8001/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/
-```
