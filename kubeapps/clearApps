@@ -6,8 +6,9 @@
 ##
 ################################################################
 
-bash ../commons/getImages images.conf
-kubectl --namespace=kube-system set image deployments/tiller-deploy tiller=gcr.io/kubernetes-helm/tiller:v2.11.0
-helm repo add bitnami https://charts.bitnami.com/bitnami
-helm delete --name kubeapps --namespace kubeapps bitnami/kubeapps
+kubectl delete -f yamls/kubeapps.yaml
+kubectl delete -f yamls/crd.yaml
+kubectl delete -f yamls/secret.yaml
+kubectl delete -f yamls/tiller.yaml
 kubectl delete ns kubeapps
+

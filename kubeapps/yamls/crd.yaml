@@ -1,0 +1,24 @@
+# Source: kubeapps/templates/apprepository-crd.yaml
+# The condition above will be true if another instance of Kubeapps is
+# already installed
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: apprepositories.kubeapps.com
+  namespace: kubeapps
+  annotations:
+    "helm.sh/resource-policy": keep
+  labels:
+    app: kubeapps-internal-apprepository-controller
+    chart: kubeapps-0.9.3
+    release: kubeapps
+    heritage: Tiller
+spec:
+  group: kubeapps.com
+  scope: Namespaced
+  names:
+    kind: AppRepository
+    plural: apprepositories
+    shortNames:
+    - apprepos
+  version: v1alpha1
