@@ -1,0 +1,13 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-11-12
+##
+################################################################
+
+bash ../commons/getImages images.conf
+kubectl --namespace=kube-system set image deployments/tiller-deploy tiller=gcr.io/kubernetes-helm/tiller:v2.11.0
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm delete --name kubeapps --namespace kubeapps bitnami/kubeapps
+kubectl delete ns kubeapps
