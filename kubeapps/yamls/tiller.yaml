@@ -31,7 +31,6 @@ spec:
         - name: TILLER_HISTORY_MAX
           value: "0"
         image: gcr.io/kubernetes-helm/tiller:v2.11.0
-        imagePullPolicy: Always
         livenessProbe:
           failureThreshold: 3
           httpGet:
@@ -59,6 +58,5 @@ spec:
           initialDelaySeconds: 1
           periodSeconds: 10
           successThreshold: 1
-      dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
