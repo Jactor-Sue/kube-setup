@@ -10,5 +10,6 @@ kubectl delete -f yamls/kubeapps.yaml
 kubectl delete -f yamls/crd.yaml
 kubectl delete -f yamls/secret.yaml
 kubectl delete -f yamls/tiller.yaml
+kubectl delete -f yamls/service.yaml
 kubectl delete ns kubeapps
 

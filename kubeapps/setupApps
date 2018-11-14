@@ -6,9 +6,25 @@
 ##
 ################################################################
 
-bash ../commons/getImages images.conf
-kubectl create namespace kubeapps
-kubectl create -f yamls/tiller.yaml 
-kubectl create -f yamls/crd.yaml
-kubectl create -f yamls/kubeapps.yaml
-kubectl create -f yamls/secret.yaml
+function setupComponents()
+{
+  bash ../commons/getImages images.conf
+  kubectl create namespace kubeapps
+  sleep 3
+  kubectl create -f yamls/secret.yaml
+  kubectl create -f yamls/tiller.yaml
+  kubectl create -f yamls/crd.yaml
+  kubectl create -f yamls/kubeapps.yaml
+  kubectl create -f yamls/service.yaml
+}
+
+function setupDashboard()
+{
+  port=$(kubectl -n kubeapps get service kubeapps-nodeport | awk 'NR>1 {print$5}'| awk -F"/" '{print$1}' | awk -F":" '{print$2}')
+  echo "URL: https://<masterip>:"$port
+  echo "Token is:"
+  echo $(kubeadm token list | awk 'NR==2 {print$1}')
+}
+
+setupComponents
+setupDashboard

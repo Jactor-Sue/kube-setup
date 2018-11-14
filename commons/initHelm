@@ -1,3 +1,4 @@
 helm init --canary-image
 helm repo add bitnami https://charts.bitnami.com/bitnami
-helm install --name kubeapps --namespace kubeapps bitnami/kubeapps
+kubectl --namespace=kube-system set image deployments/tiller-deploy tiller=gcr.io/kubernetes-helm/tiller:v2.11.0
+#helm install --name kubeapps --namespace kubeapps bitnami/kubeapps
