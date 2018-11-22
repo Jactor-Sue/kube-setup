@@ -101,7 +101,7 @@ function setupDashboard()
   echo $(kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-dashboard-token | awk '{print $1}') | grep "token:") 
 }
 
-bash ../commons/getImages images.conf
+bash ../kubecommons/getImages images.conf
 getKubeTools
 setupCluster
 setupCalico

@@ -11,7 +11,7 @@
 echo "Password is Oncecloud1234"
 docker login --username=oncecloud registry.cn-hangzhou.aliyuncs.com
 
-prefix="registry.cn-hangzhou.aliyuncs.com/isdream/"
+prefix="registry.cn-hangzhou.aliyuncs.com/qcase/"
 
 function pull()
 {
