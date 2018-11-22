@@ -22,10 +22,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: openpitrix-minio-pvc
   namespace: ${NAMESPACE}
+  annotations:
+    volume.beta.kubernetes.io/storage-class: openpitrix-minio-pv
   labels:
     app: openpitrix
     tier: minio
 spec:
+  storageClassName: openpitrix-minio-pv
   accessModes:
     - ReadWriteOnce
   resources:
@@ -81,3 +84,27 @@ spec:
       - name: minio-persistent-storage
         persistentVolumeClaim:
           claimName: openpitrix-minio-pvc
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: minio-pv-volume
+  namespace: ${NAMESPACE}
+  labels:
+    app: openpitrix
+    tier: minio
+spec:
+  storageClassName: openpitrix-minio-pv
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: openpitrix-minio-pv
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

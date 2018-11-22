@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: openpitrix-etcd-pvc
+  labels:
+    app: openpitrix
+    tier: etcd
+spec:
+  storageClassName: openpitrix-etcd-sc
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

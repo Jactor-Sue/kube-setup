@@ -22,10 +22,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: openpitrix-etcd-pvc
   namespace: ${NAMESPACE}
+  annotations:
+    volume.beta.kubernetes.io/storage-class: openpitrix-etcd-pv
   labels:
     app: openpitrix
     tier: etcd
 spec:
+  storageClassName: openpitrix-etcd-pv
   accessModes:
     - ReadWriteOnce
   resources:
@@ -70,3 +73,27 @@ spec:
       - name: etcd-persistent-storage
         persistentVolumeClaim:
           claimName: openpitrix-etcd-pvc
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: etcd-pv-volume
+  namespace: ${NAMESPACE}
+  labels:
+    app: openpitrix
+    tier: etcd
+spec:
+  storageClassName: openpitrix-etcd-pv
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: openpitrix-etcd-pv
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

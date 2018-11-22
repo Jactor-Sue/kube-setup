@@ -22,10 +22,13 @@ kind: PersistentVolumeClaim
 metadata:
   name: openpitrix-db-pvc
   namespace: ${NAMESPACE}
+  annotations:
+    volume.beta.kubernetes.io/storage-class: openpitrix-db-pv
   labels:
     app: openpitrix
     tier: db
 spec:
+  storageClassName: openpitrix-db-pv
   accessModes:
     - ReadWriteOnce
   resources:
@@ -87,3 +90,27 @@ spec:
       - name: db-persistent-storage
         persistentVolumeClaim:
           claimName: openpitrix-db-pvc
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: db-pv-volume
+  namespace: ${NAMESPACE}
+  labels:
+    app: openpitrix
+    tier: db
+spec:
+  storageClassName: openpitrix-db-pv
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/lib/mysql"
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: openpitrix-db-pv
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer

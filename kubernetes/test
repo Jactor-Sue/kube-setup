@@ -1,0 +1,106 @@
+################################################################
+##
+## Copyright (2018, ) Institute of Software, CAS
+## @author wuheng@otcaix.iscas.ac.cn
+## @date   2018-8-14
+##
+################################################################
+
+version="v1.12.1"
+podcidr="192.168.0.0/16"
+network="Calico"
+toolurl="http://118.190.96.247/tools/"
+confdir="/etc/systemd/system/kubelet.service.d/"
+systemc="/etc/systemd/system/"
+
+function getKubeTools()
+{
+  rm -rf tools.txt
+  wget $toolurl/tools.txt
+  for name in $(cat tools.txt)
+  do
+    iname=${name%-*}
+    check $iname
+    state=$?
+    if [[ $state = "0" ]]
+    then
+      wget $toolurl/$name
+      mv -f $name /usr/bin/$iname
+      chmod 777 /usr/bin/$iname
+    
+      res=$(echo $iname | grep ".service")
+      if [[ -n $res  ]]
+      then
+        \cp /usr/bin/$iname $systemc
+      fi
+
+      res=$(echo $iname | grep ".conf")
+      if [[ -n $res  ]]
+      then
+        if [[ ! -d $confdir ]]
+        then
+          mkdir -p $confdir
+        fi
+        \cp /usr/bin/$iname $confdir
+      fi
+    fi
+  done
+  rm -rf tools.txt
+}
+
+function check()
+{
+   if [[ ! -f /usr/bin/$1 ]]
+   then
+     return 0
+   else
+     return 1
+   fi
+}
+
+function setupCluster()
+{
+  swapoff -a
+  echo "1" > /proc/sys/net/bridge/bridge-nf-call-iptables
+  rm -rf $HOME/.kube
+  systemctl daemon-reload
+  systemctl start kubelet
+  systemctl stop firewalld
+  systemctl disable firewalld
+  
+  echo "kubeadm init --kubernetes-version=$version --pod-network-cidr=$podcidr --token-ttl=0 --ignore-preflight-errors=SystemVerification"
+  kubeadm init --kubernetes-version=$version --pod-network-cidr=$podcidr --token-ttl=0 --ignore-preflight-errors=SystemVerification 
+  mkdir -p $HOME/.kube
+  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+  sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+  kubectl taint nodes --all node-role.kubernetes.io/master-
+  iptables -P FORWARD ACCEPT
+}
+
+function setupCalico()
+{
+  while true
+  do
+    stat=`kubectl get po --all-namespaces | grep kube-apiserver | awk '{print $4}'`
+    if [ "$stat" = "Running" ]
+    then
+      break
+    fi
+    sleep 5
+  done
+  
+  kubectl create -f yamls/calico.yaml
+}
+
+function setupDashboard()
+{
+  kubectl create -f yamls/dashboard.yaml
+  port=$(kubectl -n kube-system get service kubernetes-dashboard | awk 'NR>1 {print$5}'| awk -F"/" '{print$1}' | awk -F":" '{print$2}')
+  echo "URL: https://<masterip>:"$port  
+  echo $(kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubernetes-dashboard-token | awk '{print $1}') | grep "token:") 
+}
+
+bash ../commons/getImages images.conf
+getKubeTools
+setupCluster

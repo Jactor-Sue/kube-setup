@@ -1,0 +1,31 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: openpitrix-etcd-deployment
+  labels:
+    app: openpitrix
+    tier: etcd
+spec:
+  selector:
+    matchLabels:
+      app: openpitrix
+      tier: etcd
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: openpitrix
+        tier: etcd
+    spec:
+      containers:
+      - name: openpitrix-etcd
+        image: busybox:v1.25.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: etcd-persistent-storage
+          mountPath: /data
+      volumes:
+      - name: etcd-persistent-storage
+        persistentVolumeClaim:
+          claimName: openpitrix-etcd-pvc
