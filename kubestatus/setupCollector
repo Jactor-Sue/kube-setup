@@ -1,2 +1,0 @@
-bash ../kubecommons/getImages images.conf
-kubectl create -f yamls/prometheus.yaml
