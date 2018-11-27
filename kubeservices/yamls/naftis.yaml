@@ -79,6 +79,7 @@ spec:
   ports:
     - port: 80
       protocol: TCP
+  type: NodePort
 ---
 # Source: naftis/templates/deployment.yaml
 apiVersion: extensions/v1beta1
