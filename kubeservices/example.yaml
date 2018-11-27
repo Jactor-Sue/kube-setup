@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
       - name: details
-        image: abcsys.cn:5000/details
+        image: istio/examples-bookinfo-details-v1:1.9.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -98,7 +98,7 @@ spec:
     spec:
       containers:
       - name: ratings
-        image: abcsys.cn:5000/ratings
+        image: istio/examples-bookinfo-reviews-v1:1.9.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -152,7 +152,7 @@ spec:
     spec:
       containers:
       - name: reviews
-        image: abcsys.cn:5000/reviews-v1
+        image: istio/examples-bookinfo-reviews-v1:1.9.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -190,7 +190,7 @@ spec:
     spec:
       containers:
       - name: reviews
-        image: abcsys.cn:5000/reviews-v2
+        image: istio/examples-bookinfo-reviews-v2:1.9.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -228,7 +228,7 @@ spec:
     spec:
       containers:
       - name: reviews
-        image: abcsys.cn:5000/reviews-v3
+        image: istio/examples-bookinfo-reviews-v3:1.9.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -282,7 +282,7 @@ spec:
     spec:
       containers:
       - name: productpage
-        image: abcsys.cn:5000/productpage
+        image: istio/examples-bookinfo-productpage-v1:1.9.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
