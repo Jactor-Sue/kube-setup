@@ -8,10 +8,9 @@
 
 function clearIstio()
 {
+  kubectl delete -n naftis -f yamls/mysql.yaml
+  kubectl delete -n naftis -f yamls/naftis.yaml
   kubectl delete -f yamls/istio.yaml
-  kubectl delete -f yamls/crds.yaml
-  kubectl delete -f yamls/namespace.yaml
 }
 
 clearIstio
-#setupDashboard

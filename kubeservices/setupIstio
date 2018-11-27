@@ -8,9 +8,9 @@
 
 function setupIstio()
 {
-  kubectl create -f yamls/namespace.yaml
-  kubectl create -f yamls/crds.yaml
   kubectl create -f yamls/istio.yaml
+  kubectl create -n naftis -f yamls/mysql.yaml
+  kubectl create -n naftis -f yamls/naftis.yaml
 }
 
 bash ../kubecommons/getImages images.conf

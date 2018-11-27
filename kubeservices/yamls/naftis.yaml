@@ -1,10 +1,4 @@
 ---
-# Source: naftis/templates/namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: istio-system
----
 # Source: naftis/templates/configmap.yaml
 apiVersion: v1
 kind: ConfigMap
@@ -101,7 +95,7 @@ spec:
     spec:
       containers:
         - name: naftis
-          image: /naftis-ui:0.1.0
+          image: sevennt/naftis-ui:0.1.1
           imagePullPolicy: IfNotPresent
           lifecycle:
             preStop:
@@ -130,7 +124,7 @@ spec:
     spec:
       containers:
         - name: naftis-api
-          image: /naftis-api:0.1.0
+          image: sevennt/naftis-api:0.1.1
           imagePullPolicy: IfNotPresent
           args:
             - --config=/etc/naftis/config/config.toml
