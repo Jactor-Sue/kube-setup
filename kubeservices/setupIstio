@@ -13,6 +13,6 @@ function setupIstio()
   kubectl create -f yamls/istio.yaml
 }
 
-bash ../commons/getImages images.conf
+bash ../kubecommons/getImages images.conf
 setupIstio
 #setupDashboard
