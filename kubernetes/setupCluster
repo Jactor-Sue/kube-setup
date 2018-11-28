@@ -104,5 +104,5 @@ function setupDashboard()
 bash ../kubecommons/getImages images.conf
 getKubeTools
 setupCluster
-setupCalico
-setupDashboard
+#setupCalico
+#setupDashboard
