@@ -31,7 +31,7 @@ function getKubeTools()
       res=$(echo $iname | grep ".service")
       if [[ -n $res  ]]
       then
-        \cp /usr/bin/$iname $systemc
+        mv /usr/bin/$iname $systemc
       fi
 
       res=$(echo $iname | grep ".conf")
@@ -41,7 +41,7 @@ function getKubeTools()
         then
           mkdir -p $confdir
         fi
-        \cp /usr/bin/$iname $confdir
+        mv /usr/bin/$iname $confdir
       fi
     fi
   done
